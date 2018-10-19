@@ -5,6 +5,20 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+
+var sql = require("mssql");
+
+var dbConfig = {
+  user: "pgnotify",
+  password: "pgnotify@123",
+  server: "210.211.124.16",
+  database: "PasGo-Notify-Setting",
+  options: {
+    encrypt: false
+  }
+};
+
+
 module.exports = {
   getAllSetting: async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -15,10 +29,70 @@ module.exports = {
         where: { is_active: true },
         limit: 1,
       });
-      return res.json(settings[0])
+      // return res.json(settings[0])
+
+
+      let executeQuery = function (res, query) {
+        sql.connect(dbConfig, function (err) {
+          if (err) {
+            console.log("Error while connecting database :- " + err);
+            res.send(err);
+          }
+          else {
+            // create Request object
+            let request = new sql.Request();
+            // query to the database
+            request.query(query, function (err, data) {
+              if (err) {
+                console.log("Error while querying database :- " + err);
+                res.send(err);
+              }
+              else {
+                // let result = data.recordsets[0];              
+                sql.close()
+                return res.send(data);
+              }
+            });
+          }
+        });
+      }
+
+      var query = "select * from [setting] where is_active = 1";
+      executeQuery(res, query)
+
     }
     let settings = await Setting.find();
-    return res.json(settings)
+
+
+    let executeQuery = function (res, query) {
+      sql.connect(dbConfig, function (err) {
+        if (err) {
+          console.log("Error while connecting database :- " + err);
+          res.send(err);
+        }
+        else {
+          // create Request object
+          var request = new sql.Request();
+          // query to the database
+          request.query(query, function (err, data) {
+            if (err) {
+              console.log("Error while querying database :- " + err);
+              res.send(err);
+            }
+            else {
+              let result = data.recordsets[0];
+              sql.close()
+              return res.send(result);
+            }
+          });
+        }
+      });
+    }
+
+    var query = "select * from [setting]";
+    executeQuery(res, query)
+
+    // return res.json(settings)
   },
 
   getActiveSetting: async (req, res) => {
@@ -56,7 +130,7 @@ module.exports = {
     }
 
     let paramType = req.param('type');
-    if (paramType === 'custom' || paramType === 'basic' ) {
+    if (paramType === 'custom' || paramType === 'basic') {
 
       await Setting.update({ type: body.type })
         .set({
