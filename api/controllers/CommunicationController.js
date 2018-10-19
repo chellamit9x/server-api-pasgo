@@ -1,58 +1,97 @@
-/**
- * TrackingController
- *
- * @description :: Server-side actions for handling incoming requests.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
+var sql = require("mssql");
+var dbConfig = {
+  user: "pgnotify",
+  password: "pgnotify@123",
+  server: "210.211.124.16",
+  database: "PasGo-Notify-Setting",
+  options: {
+    encrypt: false
+  }
+};
 
 module.exports = {
+
   getAllCommunication: async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-
-
-    let communications = await Communication.find();
-    return res.json({ communications: communications });
-
+    let query = "SELECT * FROM communication";
+    let executeQuery = function (res, query) {
+      sql.connect(dbConfig, function (err) {
+        if (err) {
+          console.log("Error while connecting database :- " + err);
+          res.send(err);
+        } else {
+          var request = new sql.Request();
+          request.query(query, function (err, data) {
+            if (err) {
+              console.log("Error while querying database :- " + err);
+              res.send(err);
+            } else {
+              let reult = {
+                communications: data.recordsets[0]
+              }
+              sql.close();
+              return res.json(reult);
+            }
+          });
+        }
+      });
+    }
+    executeQuery(res, query);
   },
 
   postCommunication: async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-
     let newCommunication = req.body;
-
-    let arrmaxC = await Communication.find({
-      where: {},
-      limit: 1,
-      sort: 'sortId DESC'
-    });
-    if (arrmaxC.length !== 0) {
-      newCommunication.sortId = arrmaxC[0].sortId + 1;
+    let executeQuery = function (res, query) {
+      sql.connect(dbConfig, function (err) {
+        if (err) {
+          console.log("Error while connecting database :- " + err);
+          res.send(err);
+        } else {
+          var request = new sql.Request();
+          request.query(query, function (err, data) {
+            if (err) {
+              console.log("Error while querying database :- " + err);
+              res.send(err);
+            } else {
+              let reult = {
+                record: data.recordsets[0][0]
+              }
+              sql.close();
+              return res.json(reult);
+            }
+          });
+        }
+      });
     }
-    let record = await Communication.create(newCommunication).fetch();
+    let query = `insert into communication (image, title, content, action_discount, link_communication, category, is_active, locations, sortId)
+        values('${newCommunication.image}', '${newCommunication.title}', '${newCommunication.content}', '${newCommunication.action_discount}', '${newCommunication.link_communication}', '${newCommunication.category}', '${newCommunication.is_active}', '${newCommunication.locations}', '${newCommunication.sortId}')
+        SELECT * FROM communication WHERE id = SCOPE_IDENTITY()`;
+    executeQuery(res, query);
 
-    return res.json({ record: record });
   },
 
   putCommunication: async (req, res) => {
-
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-
     let id = req.param('id');
-    let query = { id: id }
+    let query = {
+      id: id
+    }
     let communication = await Communication.findOne(query);
     let is_active = communication.is_active;
-
     await Communication.update(query)
-      .set({ is_active: !is_active });
-    return res.json({ update: 'ok' })
-
-
+      .set({
+        is_active: !is_active
+      });
+    return res.json({
+      update: 'ok'
+    })
   },
 
   sortCommunication: async (req, res) => {
@@ -66,30 +105,47 @@ module.exports = {
 
     for (let i = 0; i < arrSortId.length; i++) {
       let element = arrSortId[i];
-      let query = {id: element.id}
+      let query = {
+        id: element.id
+      }
       await Communication.update(query)
-      .set({ sortId: element.sortId });
+        .set({
+          sortId: element.sortId
+        });
     }
 
-    return res.json({ update: 'ok' })
+    return res.json({
+      update: 'ok'
+    })
 
 
   },
-
-
-
 
   deleteCommunication: async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-
-    // let query = req.body;
     let id = req.param('id');
-
-    // let query = {id: id}
-    await Communication.destroy(id);
-    return res.json({ status: " Status 200 ok" });
+    let executeQuery = function (res, query) {
+      sql.connect(dbConfig, function (err) {
+        if (err) {
+          console.log("Error while connecting database :- " + err);
+          res.send(err);
+        } else {
+          var request = new sql.Request();
+          request.query(query, function (err, data) {
+            if (err) {
+              console.log("Error while querying database :- " + err);
+              res.send(err);
+            } else {
+              sql.close();
+              return res.json({ status: " Status 200 ok" });
+            }
+          });
+        }
+      });
+    }
+    let query = `DELETE FROM communication WHERE id= ${id}`;
+    executeQuery(res, query);
   }
 };
-
