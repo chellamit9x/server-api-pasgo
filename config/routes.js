@@ -79,8 +79,8 @@ module.exports.routes = {
   'POST /api/v1/restaurant/update': 'RestaurantController.sortRestaurant',
 
   //Test
-  // 'GET /api/v1/test': 'TestController.getTest',
-  // 'POST /api/v1/test': 'TestController.postTest',
+  'GET /api/v1/test': 'TestController.getTest',
+  'POST /api/v1/test': 'TestController.postTest',
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗
   //  ║║║║╣ ╠╩╗╠═╣║ ║║ ║╠╩╗╚═╗
