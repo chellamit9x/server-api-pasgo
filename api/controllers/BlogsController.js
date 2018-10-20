@@ -90,7 +90,7 @@ module.exports = {
                 let titleSlug = ChangeToSlug(itemBlog.TieuDe);
                 blogs.push({
                   "id": itemBlog.Id,
-                  "link_blog": 'https://pasgo.vn/blog/' +  locationsSlug + "/" + catagorySlug + "/" + titleSlug + "-" + itemBlog.id,
+                  "link_blog": 'https://pasgo.vn/blog/' +  locationsSlug + "/" + catagorySlug + "/" + titleSlug + "-" + itemBlog.Id,
                   "name_blog": itemBlog.TieuDe
                 });
               }        
@@ -108,19 +108,6 @@ module.exports = {
 
     var query = `exec usp_GetLinkBlog ${locations}, '${keysearch}'`;
     executeQuery(res, query)
-  },
-
-
-  postBlog: async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-    let blog = req.body;
-    let resultBlog = await Blogs.create(blog).fetch();
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-    return res.json(resultBlog);
   },
 
 
