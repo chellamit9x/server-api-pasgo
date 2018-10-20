@@ -11,7 +11,7 @@ module.exports = {
     let link_restaurant = req.param('link_restaurant');
     if (link_restaurant) {
       let query = { link_restaurant: link_restaurant }
-      let restaurant = await Restaurant.findOne(query)
+      let restaurant = await Restaurant.findOne(query) 
       res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
