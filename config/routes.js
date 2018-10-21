@@ -78,6 +78,15 @@ module.exports.routes = {
   'POST /api/v1/restaurant/update/:id': 'RestaurantController.putRestaurant',
   'POST /api/v1/restaurant/update': 'RestaurantController.sortRestaurant',
 
+
+    //New Restaurant
+    // 'GET /api/v1/restaurant': 'NewRestaurantController.getAllOrRestaurant',
+    // 'GET /api/v1/restaurant/dbsetting': 'RestaurantController.getOneRestaurantSetting',
+    // 'POST /api/v1/restaurant': 'RestaurantController.postRestaurant',
+    // 'POST /api/v1/restaurant/update/:id': 'RestaurantController.putRestaurant',
+    // 'POST /api/v1/restaurant/update': 'RestaurantController.sortRestaurant',
+
+    
   //Test
   'GET /api/v1/test': 'TestController.getTest',
   'POST /api/v1/test': 'TestController.postTest',
