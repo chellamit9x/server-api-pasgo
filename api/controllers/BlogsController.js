@@ -4,6 +4,19 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
+
+
+// use [PasGo-Notify]
+// SELECT DoiTacKhuyenMai.TitleMeta, DoiTacKhuyenMai.NDTieuDeBaiViet, DoiTacKhuyenMai.TieuDe, ChiNhanhDoiTac.TinhId, DoiTacKhuyenMai.NDTieuDe, AnhDoiTacKhuyenMai.Version 
+// FROM DoiTacKhuyenMai
+// FULL OUTER JOIN NhomCNDoiTac ON DoiTacKhuyenMai.Id = NhomCNDoiTac.DoiTacKhuyenMaiId 
+// FULL OUTER JOIN ChiNhanhDoiTac ON ChiNhanhDoiTac.Id = NhomCNDoiTac.Id  
+// FULL OUTER JOIN AnhDoiTacKhuyenMai ON AnhDoiTacKhuyenMai.DoiTacKhuyenMaiId = DoiTacKhuyenMai.Id
+// WHERE ArticleId=1990
+//= : exec GetDetailRestaurant 1990
+//let getArticleId = oneLinkRestaurant.split('-')[oneLinkRestaurant.split('-').length-1];             
+// 
+
 var sql = require("mssql");
 const _ = require('lodash');
 var dbConfig = {
@@ -72,12 +85,12 @@ module.exports = {
     let keysearch = req.param('keysearch');
     let locations = parseInt(req.param('locations'));
     let locationsSlug = 'ha-noi';
-    if (locations === 1) {
-      locationsSlug = 'ha-noi';
+    if (locations === 4) {
+      locationsSlug = 'da-nang';
     } else if (locations === 2) {
       locationsSlug = 'ho-chi-minh';
     } else {
-      locationsSlug = 'da-nang';
+      locationsSlug = 'ha-noi';
     }
 
     let executeQuery = function (res, query) {
@@ -99,21 +112,16 @@ module.exports = {
             else {
               let blogs = [];
               let arrNoiDung = []
-
               for (let i = 0; i < data.recordsets[0].length; i++) {
-
+                arrRestaurant = [];
                 const itemBlog = data.recordsets[0][i];
                 let catagorySlug = ChangeToSlug(itemBlog.TenDanhMuc);
                 let titleSlug = ChangeToSlug(itemBlog.TieuDe);
                 let contentBlog = itemBlog.NoiDung
-                let arrRestaurant = [];
                 let arrLinkRestaurant = GetAllLinkRestaurantInBlog(data.recordsets[0][i].NoiDung)
                 for (let i = 0; i < arrLinkRestaurant.length; i++) {
-                  const oneLinkRestaurant = arrLinkRestaurant[i];
-                  arrRestaurant.push({
-                    link_restaurant: oneLinkRestaurant
-                  });
-                  
+                  let oneLinkRestaurant = arrLinkRestaurant[i];                  
+                  arrRestaurant.push(oneLinkRestaurant);          
                 }
                 arrNoiDung.push(contentBlog)
                 blogs.push({
@@ -123,10 +131,10 @@ module.exports = {
                   "arrRestaurant": arrRestaurant
                 });
               }
+              sql.close()
               let result = {
                 "blogs": blogs
               }
-              sql.close()
               return res.send(result);
             }
           });
@@ -135,7 +143,8 @@ module.exports = {
     }
 
     var query = `exec GetListLinkBlog ${locations}, '${keysearch}'`;
-    executeQuery(res, query)
+    executeQuery(res, query);
+    
   },
 
 
