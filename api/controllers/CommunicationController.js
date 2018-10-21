@@ -15,6 +15,7 @@ module.exports = {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    let query = "SELECT * FROM communication";
     let executeQuery = function (res, query) {
       sql.connect(dbConfig, function (err) {
         if (err) {
@@ -37,7 +38,6 @@ module.exports = {
         }
       });
     }
-    let query = "SELECT * FROM communication";
     executeQuery(res, query);
   },
 
@@ -58,11 +58,11 @@ module.exports = {
               console.log("Error while querying database :- " + err);
               res.send(err);
             } else {
-              let result = {
+              let reult = {
                 record: data.recordsets[0][0]
               }
               sql.close();
-              return res.json(result);
+              return res.json(reult);
             }
           });
         }
@@ -101,7 +101,7 @@ module.exports = {
         }
       });
     }
-    let query = `UPDATE communication SET is_active = is_active ^ 1 WHERE id = ${id}`;
+    let query = `EXEC UpdateNotify ${id}`;
     executeQuery(res, query);
   },
 
@@ -111,25 +111,26 @@ module.exports = {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
+    let executeQuery = function (res, query) {
+      new sql.ConnectionPool(dbConfig).connect().then((pool)=>{
+        return pool.request().query(query);
+      }).then((result)=>{
+        let rows = result.recordset;
+        res.status(200).json(rows);
+        sql.close();
+      }).catch((err)=>{
+        res.status(500).send({message: `${err}`});
+        sql.close();
+      });
+    }
+
     let objSortId = req.body;
     let arrSortId = objSortId.updateSordId;
-    console.log("doi tuong sortId: ", objSortId);
-    console.log(arrSortId);
-    
 
-    for (let i = 0; i < arrSortId.length; i++) {
-      let element = arrSortId[i];
-      let query = {
-        id: element.id
-      }
-      await Communication.update(query)
-        .set({
-          sortId: element.sortId
-        });
-    }
-    return res.json({
-      update: 'ok'
-    })
+    arrSortId.forEach(element => {
+      let query = `EXEC SortNotify ${element.id}, ${element.sortId}`;
+      executeQuery(res, query);
+    });
   },
 
   deleteCommunication: async (req, res) => {
@@ -150,9 +151,7 @@ module.exports = {
               res.send(err);
             } else {
               sql.close();
-              return res.json({
-                status: " Status 200 ok"
-              });
+              return res.json({ status: " Status 200 ok" });
             }
           });
         }
