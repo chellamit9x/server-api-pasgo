@@ -97,6 +97,9 @@ module.exports = {
       locations = 1;
     }
 
+    console.log(keysearch);
+    
+
     let executeQuery = function (res, query) {
       sql.connect(dbConfig, function (err) {
         if (err) {
