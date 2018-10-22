@@ -65,12 +65,15 @@ const GetAllLinkRestaurantInBlog = (contentBlog) => {
   const urlRegex = require('url-regex');
   let arrLink = contentBlog.match(urlRegex())
   let arrLinkNhaHang = [];
-  for (let i = 0; i < arrLink.length; i++) {
-    if (arrLink[i].split('/').length === 5 && arrLink[i].split('/')[3] === "nha-hang") {
-      arrLinkNhaHang.push(arrLink[i]);
+  if (arrLink) {
+    for (let i = 0; i < arrLink.length; i++) {
+      if (arrLink[i].split('/').length === 5 && arrLink[i].split('/')[3] === "nha-hang") {
+        arrLinkNhaHang.push(arrLink[i]);
+      }
     }
+    arrLinkNhaHang = _.uniq(arrLinkNhaHang);
   }
-  arrLinkNhaHang = _.uniq(arrLinkNhaHang);
+
   return arrLinkNhaHang;
 }
 
@@ -83,15 +86,19 @@ module.exports = {
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, contentType,Content-Type, Accept, Authorization");
 
     let keysearch = req.param('keysearch');
-    let locations = parseInt(req.param('locations'));
-    let locationsSlug = 'ha-noi';
-    if (locations === 4) {
-      locationsSlug = 'da-nang';
-    } else if (locations === 2) {
-      locationsSlug = 'ho-chi-minh';
+    let locationsSlug = req.param('locations');
+
+    let locations = 1;
+    if (locationsSlug === 'da-nang') {
+      locations = 4;
+    } else if (locationsSlug === 'ho-chi-minh') {
+      locations = 2;
     } else {
-      locationsSlug = 'ha-noi';
+      locations = 1;
     }
+
+    console.log(keysearch);
+    
 
     let executeQuery = function (res, query) {
       sql.connect(dbConfig, function (err) {
