@@ -75,18 +75,14 @@ module.exports = {
         if (err) {
           console.log("Error while connecting database :- " + err);
           res.send(err);
-        }
-        else {
-          // create Request object
-          let request = new sql.Request();
-          // query to the database
+        } else {
+          var request = new sql.Request();
           request.query(query, function (err, data) {
             if (err) {
               console.log("Error while querying database :- " + err);
-              sql.close()
+              sql.close();
               res.send(err);
-            }
-            else {
+            } else {
               let blogs = [];
               let arrNoiDung = []
               for (let i = 0; i < data.recordsets[0].length; i++) {
@@ -97,8 +93,8 @@ module.exports = {
                 let contentBlog = itemBlog.NoiDung
                 let arrLinkRestaurant = GetAllLinkRestaurantInBlog(data.recordsets[0][i].NoiDung)
                 for (let i = 0; i < arrLinkRestaurant.length; i++) {
-                  let oneLinkRestaurant = arrLinkRestaurant[i];                  
-                  arrRestaurant.push(oneLinkRestaurant);          
+                  let oneLinkRestaurant = arrLinkRestaurant[i];
+                  arrRestaurant.push(oneLinkRestaurant);
                 }
                 arrNoiDung.push(contentBlog)
                 blogs.push({
@@ -108,20 +104,21 @@ module.exports = {
                   "arrRestaurant": arrRestaurant
                 });
               }
-              sql.close()
+              sql.close();
+
               let result = {
                 "blogs": blogs
               }
-              return res.send(result);
+              return res.status(200).json(result);;
             }
           });
         }
       });
     }
 
-    var query = `exec GetListLinkBlog ${locations}, '${keysearch}'`;
+    let query = `exec GetListLinkBlog ${locations}, '${keysearch}'`;
     executeQuery(res, query);
-    
+
   },
 
 

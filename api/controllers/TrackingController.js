@@ -36,7 +36,7 @@ module.exports = {
       });
     }
 
-    let query =   `SELECT 
+    let query = `SELECT 
                     tracking.action, 
                     tracking.link_notify, 
                     tracking.time_current, 
@@ -66,7 +66,7 @@ module.exports = {
               res.send(err);
             } else {
               sql.close();
-              return res.status(200).json({status: 'ok'});;
+              return res.status(200).json({ status: 'ok' });;
             }
           });
         }
@@ -79,7 +79,7 @@ module.exports = {
     let time_current = tracking.time_current;
     let name_notify = tracking.name_notify;
 
-    let query =   `INSERT INTO tracking (action, link_notify, time_current, name_notify)
+    let query = `INSERT INTO tracking (action, link_notify, time_current, name_notify)
                   values ('${action}', '${link_notify}', '${time_current}', '${name_notify}')`
 
     executeQuery(res, query);
