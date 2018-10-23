@@ -70,49 +70,42 @@ module.exports = {
       locations = 1;
     }
 
-    let executeQuery = function (res, query) {
-      sql.connect(config.dbConfig, function (err) {
-        if (err) {
-          console.log("Error while connecting database :- " + err);
-          res.send(err);
-        } else {
-          var request = new sql.Request();
-          request.query(query, function (err, data) {
-            if (err) {
-              console.log("Error while querying database :- " + err);
-              sql.close();
-              res.send(err);
-            } else {
-              let blogs = [];
-              let arrNoiDung = []
-              for (let i = 0; i < data.recordsets[0].length; i++) {
-                arrRestaurant = [];
-                const itemBlog = data.recordsets[0][i];
-                let catagorySlug = ChangeToSlug(itemBlog.TenDanhMuc);
-                let titleSlug = ChangeToSlug(itemBlog.TieuDe);
-                let contentBlog = itemBlog.NoiDung
-                let arrLinkRestaurant = GetAllLinkRestaurantInBlog(data.recordsets[0][i].NoiDung)
-                for (let i = 0; i < arrLinkRestaurant.length; i++) {
-                  let oneLinkRestaurant = arrLinkRestaurant[i];
-                  arrRestaurant.push(oneLinkRestaurant);
-                }
-                arrNoiDung.push(contentBlog)
-                blogs.push({
-                  "id": itemBlog.Id,
-                  "link_blog": 'https://pasgo.vn/blog/' + locationsSlug + "/" + catagorySlug + "/" + titleSlug + "-" + itemBlog.Id,
-                  "name_blog": itemBlog.TieuDe,
-                  "arrRestaurant": arrRestaurant
-                });
-              }
-              sql.close();
 
-              let result = {
-                "blogs": blogs
-              }
-              return res.status(200).json(result);;
-            }
+
+    let executeQuery = function (res, query) {
+      new sql.ConnectionPool(config.dbConfig).connect().then((pool) => {
+        return pool.request().query(query);
+      }).then((data) => {
+
+        let blogs = [];
+        let arrNoiDung = []
+        for (let i = 0; i < data.recordsets[0].length; i++) {
+          arrRestaurant = [];
+          const itemBlog = data.recordsets[0][i];
+          let catagorySlug = ChangeToSlug(itemBlog.TenDanhMuc);
+          let titleSlug = ChangeToSlug(itemBlog.TieuDe);
+          let contentBlog = itemBlog.NoiDung
+          let arrLinkRestaurant = GetAllLinkRestaurantInBlog(data.recordsets[0][i].NoiDung)
+          for (let i = 0; i < arrLinkRestaurant.length; i++) {
+            let oneLinkRestaurant = arrLinkRestaurant[i];
+            arrRestaurant.push(oneLinkRestaurant);
+          }
+          arrNoiDung.push(contentBlog)
+          blogs.push({
+            "id": itemBlog.Id,
+            "link_blog": 'https://pasgo.vn/blog/' + locationsSlug + "/" + catagorySlug + "/" + titleSlug + "-" + itemBlog.Id,
+            "name_blog": itemBlog.TieuDe,
+            "arrRestaurant": arrRestaurant
           });
         }
+        let result = {
+          "blogs": blogs
+        }
+        res.status(200).json(result);
+        sql.close();
+      }).catch((err) => {
+        res.status(500).send({ message: `${err}` });
+        sql.close();
       });
     }
 
