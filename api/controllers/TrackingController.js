@@ -14,28 +14,20 @@ module.exports = {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
+
+
     let executeQuery = function (res, query) {
-      sql.connect(config.dbConfigSetting, function (err) {
-        if (err) {
-          console.log("Error while connecting database :- " + err);
-          res.send(err);
-        } else {
-          var request = new sql.Request();
-          request.query(query, function (err, data) {
-            if (err) {
-              console.log("Error while querying database :- " + err);
-              sql.close();
-              res.send(err);
-            } else {
-              let result = data.recordsets[0];
-              sql.close();
-              return res.status(200).json(result);;
-            }
-          });
-        }
+      new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
+        return pool.request().query(query);
+      }).then((data) => {
+        let result = data.recordsets[0];
+        res.status(200).json(result);
+        sql.close();
+      }).catch((err) => {
+        res.status(500).send({ message: `${err}` });
+        sql.close();
       });
     }
-
     let query = `SELECT 
                     tracking.action, 
                     tracking.link_notify, 
@@ -53,23 +45,14 @@ module.exports = {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
     let executeQuery = function (res, query) {
-      sql.connect(config.dbConfigSetting, function (err) {
-        if (err) {
-          console.log("Error while connecting database :- " + err);
-          res.send(err);
-        } else {
-          var request = new sql.Request();
-          request.query(query, function (err, data) {
-            if (err) {
-              console.log("Error while querying database :- " + err);
-              sql.close();
-              res.send(err);
-            } else {
-              sql.close();
-              return res.status(200).json({ status: 'ok' });;
-            }
-          });
-        }
+      new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
+        return pool.request().query(query);
+      }).then((data) => {
+        res.status(200).json({ status: 'ok' });
+        sql.close();
+      }).catch((err) => {
+        res.status(500).send({ message: `${err}` });
+        sql.close();
       });
     }
 
