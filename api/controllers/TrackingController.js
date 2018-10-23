@@ -63,7 +63,7 @@ module.exports = {
     let name_notify = tracking.name_notify;
 
     let query = `INSERT INTO tracking (action, link_notify, time_current, name_notify)
-                  values ('${action}', '${link_notify}', '${time_current}', '${name_notify}')`
+                  values (N'${action}', N'${link_notify}', '${time_current}', N'${name_notify}')`
 
     executeQuery(res, query);
   },
