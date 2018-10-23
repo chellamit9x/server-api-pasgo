@@ -1,5 +1,5 @@
 var sql = require("mssql");
-const dbConfig = require('./../../config/env/dbconfig');
+const config = require('./../../config/env/dbconfig');
 
 module.exports = {
 
@@ -9,7 +9,7 @@ module.exports = {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
     let executeQuery = function (res, query) {
-      new sql.ConnectionPool(dbConfig).connect().then((pool) => {
+      new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
         return pool.request().query(query);
       }).then((data) => {
         let reult = {
@@ -22,32 +22,6 @@ module.exports = {
         return res.status(500).send({ message: `${err}` });
       });
     }
-
-
-
-
-    // let executeQuery = function (res, query) {
-    //   sql.connect(dbConfig, function (err) {
-    //     if (err) {
-    //       console.log("Error while connecting database :- " + err);
-    //       res.send(err);
-    //     } else {
-    //       var request = new sql.Request();
-    //       request.query(query, function (err, data) {
-    //         if (err) {
-    //           console.log("Error while querying database :- " + err);
-    //           res.send(err);
-    //         } else {
-    //           let reult = {
-    //             communications: data.recordsets[0]
-    //           }
-    //           sql.close();
-    //           return res.json(reult);
-    //         }
-    //       });
-    //     }
-    //   });
-    // }
     let query = "SELECT * FROM communication";
     executeQuery(res, query);
   },
@@ -58,7 +32,7 @@ module.exports = {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     let newCommunication = req.body;
     let executeQuery = function (res, query) {
-      sql.connect(dbConfig, function (err) {
+      sql.connect(config.dbConfigSetting, function (err) {
         if (err) {
           console.log("Error while connecting database :- " + err);
           res.send(err);
@@ -80,8 +54,9 @@ module.exports = {
       });
     }
     let query = `insert into communication (image, title, content, action_discount, link_communication, category, is_active, locations, sortId)
-        values('${newCommunication.image}', '${newCommunication.title}', '${newCommunication.content}', '${newCommunication.action_discount}', '${newCommunication.link_communication}', '${newCommunication.category}', '${newCommunication.is_active}', '${newCommunication.locations}', '${newCommunication.sortId}')
+        values('${newCommunication.image}',   N'${newCommunication.title}', N'${newCommunication.content}', N'${newCommunication.action_discount}', '${newCommunication.link_communication}', '${newCommunication.category}', '${newCommunication.is_active}', '${newCommunication.locations}', '${newCommunication.sortId}')
         SELECT * FROM communication WHERE id = SCOPE_IDENTITY()`;
+    console.log(query);
     executeQuery(res, query);
 
   },
@@ -92,7 +67,7 @@ module.exports = {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     let id = req.param('id');
     let executeQuery = function (res, query) {
-      sql.connect(dbConfig, function (err) {
+      sql.connect(config.dbConfigSetting, function (err) {
         if (err) {
           console.log("Error while connecting database :- " + err);
           res.send(err);
@@ -123,7 +98,7 @@ module.exports = {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
     let executeQuery = function (res, query) {
-      new sql.ConnectionPool(dbConfig).connect().then((pool) => {
+      new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
         return pool.request().query(query);
       }).then((result) => {
         let rows = result.recordset;
@@ -150,7 +125,7 @@ module.exports = {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     let id = req.param('id');
     let executeQuery = function (res, query) {
-      sql.connect(dbConfig, function (err) {
+      sql.connect(config.dbConfigSetting, function (err) {
         if (err) {
           console.log("Error while connecting database :- " + err);
           res.send(err);
