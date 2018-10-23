@@ -8,47 +8,42 @@ module.exports = {
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
+
+
+
+
       let executeQuery = function (res, query) {
-        sql.connect(config.dbConfigSetting, function (err) {
-          if (err) {
-            console.log("Error while connecting database :- " + err);
-            res.send(err);
+        new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
+          return pool.request().query(query);
+        }).then((data) => {
+
+          let settingIsActive = data.recordsets[0][0];
+          let resultIsActive = {
+            "id": settingIsActive.id,
+            "theme_options": {
+              "title_color": settingIsActive.title_color,
+              "background_color": settingIsActive.background_color,
+              "action_color": settingIsActive.action_color,
+              "content_color": settingIsActive.content_color
+            },
+            "display_option": {
+              "display_time": settingIsActive.display_time,
+              "delay_time": settingIsActive.delay_time,
+              "is_show_mobile": settingIsActive.is_show_mobile,
+              "mobile_position": settingIsActive.mobile_position,
+              "desktop_position": settingIsActive.desktop_position
+            },
+            "type": settingIsActive.type,
+            "is_active": settingIsActive.is_active
           }
-          else {
-            let request = new sql.Request();
-            request.query(query, function (err, data) {
-              if (err) {
-                console.log("Error while querying database :- " + err);
-                sql.close()
-                res.send(err);
-              }
-              else {
-                let settingIsActive = data.recordsets[0][0];
-                let resultIsActive = {
-                  "id": settingIsActive.id,
-                  "theme_options": {
-                    "title_color": settingIsActive.title_color,
-                    "background_color": settingIsActive.background_color,
-                    "action_color": settingIsActive.action_color,
-                    "content_color": settingIsActive.content_color
-                  },
-                  "display_option": {
-                    "display_time": settingIsActive.display_option,
-                    "delay_time": settingIsActive.delay_time,
-                    "is_show_mobile": settingIsActive.is_show_mobile,
-                    "mobile_position": settingIsActive.mobile_position,
-                    "desktop_position": settingIsActive.desktop_position
-                  },
-                  "type": settingIsActive.type,
-                  "is_active": settingIsActive.is_active
-                }
-                sql.close()
-                return res.json(resultIsActive);
-              }
-            });
-          }
+          res.status(200).json(resultIsActive);
+          sql.close();
+        }).catch((err) => {
+          res.status(500).send({ message: `${err}` });
+          sql.close();
         });
       }
+
       var query = "select * from [setting] where is_active = 1";
       executeQuery(res, query)
     } else {
@@ -133,14 +128,14 @@ module.exports = {
 
     if (paramType === 'custom' || paramType === 'basic') {
       let executeQuery = function (res, query) {
-        new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool)=>{
+        new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
           return pool.request().query(query);
-        }).then((result)=>{
+        }).then((result) => {
           let rows = result.recordset;
           res.status(200).json(rows);
           sql.close();
-        }).catch((err)=>{
-          res.status(500).send({message: `${err}`});
+        }).catch((err) => {
+          res.status(500).send({ message: `${err}` });
           sql.close();
         });
       }
