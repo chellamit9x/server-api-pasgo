@@ -1,46 +1,21 @@
-/**
- * SettingController
- *
- * @description :: Server-side actions for handling incoming requests.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
-
-
 var sql = require("mssql");
-
-var dbConfig = {
-  user: "pgnotify",
-  password: "pgnotify@123",
-  server: "210.211.124.16",
-  database: "PasGo-Notify-Setting",
-  options: {
-    encrypt: false
-  }
-};
-
+const config = require('./../../config/env/dbconfig');
 
 module.exports = {
-
-
-
-
   getAllSetting: async (req, res) => {
-
     if (req.param('is_active') === 'true') {
       res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
       let executeQuery = function (res, query) {
-        sql.connect(dbConfig, function (err) {
+        sql.connect(config.dbConfigSetting, function (err) {
           if (err) {
             console.log("Error while connecting database :- " + err);
             res.send(err);
           }
           else {
-            // create Request object
             let request = new sql.Request();
-            // query to the database
             request.query(query, function (err, data) {
               if (err) {
                 console.log("Error while querying database :- " + err);
@@ -48,7 +23,6 @@ module.exports = {
                 res.send(err);
               }
               else {
-                // let result = data.recordsets[0];      
                 let settingIsActive = data.recordsets[0][0];
                 let resultIsActive = {
                   "id": settingIsActive.id,
@@ -83,7 +57,7 @@ module.exports = {
       res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
       let executeQuery = function (res, query) {
-        new sql.ConnectionPool(dbConfig).connect().then((pool) => {
+        new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
           return pool.request().query(query);
         }).then((data) => {
           let settingBasic = data.recordsets[0][0];
@@ -137,11 +111,6 @@ module.exports = {
     }
   },
 
-  getActiveSetting: async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  },
-
   postSetting: async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
@@ -152,8 +121,6 @@ module.exports = {
     let background_color = body.background_color;
     let action_color = body.action_color;
     let content_color = body.content_color;
-
-
 
     let display_time = parseInt(body.display_time);
     let delay_time = parseInt(body.delay_time);
@@ -166,7 +133,7 @@ module.exports = {
 
     if (paramType === 'custom' || paramType === 'basic') {
       let executeQuery = function (res, query) {
-        new sql.ConnectionPool(dbConfig).connect().then((pool)=>{
+        new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool)=>{
           return pool.request().query(query);
         }).then((result)=>{
           let rows = result.recordset;
@@ -177,31 +144,6 @@ module.exports = {
           sql.close();
         });
       }
-      // let executeQuery = function (res, query) {
-      //   sql.connect(dbConfig, function (err) {
-      //     if (err) {
-      //       console.log("Error while connecting database :- " + err);
-      //       res.send(err);
-      //     }
-      //     else {
-      //       // create Request object
-      //       let request = new sql.Request();
-      //       // query to the database
-      //       request.query(query, function (err, data) {
-      //         if (err) {
-      //           console.log("Error while querying database :- " + err);
-      //           sql.close()
-      //           res.send(err);
-      //         }
-      //         else {
-      //           // let result = data.recordsets[0];      
-      //           sql.close()
-      //           return res.send(data);
-      //         }
-      //       });
-      //     }
-      //   });
-      // }
       if (paramType === 'custom') {
         let query = `UPDATE setting 
         SET 
@@ -226,43 +168,9 @@ module.exports = {
           type = '${paramType}'`
         executeQuery(res, query)
       }
-
     } else {
       return res.send('false')
     }
   },
-
-  putSetting: async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-    let body = req.body;
-    let theme_options = {
-      title_color: body.title_color,
-      background_color: body.background_color,
-      action_color: body.action_color,
-      content_color: body.content_color
-    }
-
-    let display_option = {
-      display_time: parseInt(body.display_time),
-      delay_time: parseInt(body.delay_time),
-      is_show_mobile: body.is_show_mobile,
-      mobile_position: parseInt(body.mobile_position),
-      desktop_position: parseInt(body.desktop_position)
-    }
-
-    await Setting.update({ type: body.type })
-      .set({
-        theme_options: theme_options,
-        display_option: display_option,
-        is_active: body.is_active,
-      });
-
-    return res.json({ status: '201 created' })
-
-
-  }
-
 };
 

@@ -1,34 +1,7 @@
-/**
- * BlogsController
- *
- * @description :: Server-side actions for handling incoming requests.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
-
-
-// use [PasGo-Notify]
-// SELECT DoiTacKhuyenMai.TitleMeta, DoiTacKhuyenMai.NDTieuDeBaiViet, DoiTacKhuyenMai.TieuDe, ChiNhanhDoiTac.TinhId, DoiTacKhuyenMai.NDTieuDe, AnhDoiTacKhuyenMai.Version 
-// FROM DoiTacKhuyenMai
-// FULL OUTER JOIN NhomCNDoiTac ON DoiTacKhuyenMai.Id = NhomCNDoiTac.DoiTacKhuyenMaiId 
-// FULL OUTER JOIN ChiNhanhDoiTac ON ChiNhanhDoiTac.Id = NhomCNDoiTac.Id  
-// FULL OUTER JOIN AnhDoiTacKhuyenMai ON AnhDoiTacKhuyenMai.DoiTacKhuyenMaiId = DoiTacKhuyenMai.Id
-// WHERE ArticleId=1990
-//= : exec GetDetailRestaurant 1990
-//let getArticleId = oneLinkRestaurant.split('-')[oneLinkRestaurant.split('-').length-1];             
-// 
 
 var sql = require("mssql");
 const _ = require('lodash');
-var dbConfig = {
-  user: "pgnotify",
-  password: "pgnotify@123",
-  server: "210.211.124.16",
-  database: "PasGo-Notify",
-  options: {
-    encrypt: false
-  }
-};
-
+const config = require('./../../config/env/dbconfig');
 
 
 const ChangeToSlug = (chuoi) => {
@@ -97,11 +70,8 @@ module.exports = {
       locations = 1;
     }
 
-    console.log(keysearch);
-    
-
     let executeQuery = function (res, query) {
-      sql.connect(dbConfig, function (err) {
+      sql.connect(config.dbConfig, function (err) {
         if (err) {
           console.log("Error while connecting database :- " + err);
           res.send(err);
