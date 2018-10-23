@@ -7,29 +7,48 @@ module.exports = {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-    let query = "SELECT * FROM communication";
+
     let executeQuery = function (res, query) {
-      sql.connect(dbConfig, function (err) {
-        if (err) {
-          console.log("Error while connecting database :- " + err);
-          res.send(err);
-        } else {
-          var request = new sql.Request();
-          request.query(query, function (err, data) {
-            if (err) {
-              console.log("Error while querying database :- " + err);
-              res.send(err);
-            } else {
-              let reult = {
-                communications: data.recordsets[0]
-              }
-              sql.close();
-              return res.json(reult);
-            }
-          });
+      new sql.ConnectionPool(dbConfig).connect().then((pool) => {
+        return pool.request().query(query);
+      }).then((data) => {
+        let reult = {
+          communications: data.recordsets[0]
         }
+        sql.close();
+        return res.status(200).json(reult);
+      }).catch((err) => {
+        sql.close();
+        return res.status(500).send({ message: `${err}` });
       });
     }
+
+
+
+
+    // let executeQuery = function (res, query) {
+    //   sql.connect(dbConfig, function (err) {
+    //     if (err) {
+    //       console.log("Error while connecting database :- " + err);
+    //       res.send(err);
+    //     } else {
+    //       var request = new sql.Request();
+    //       request.query(query, function (err, data) {
+    //         if (err) {
+    //           console.log("Error while querying database :- " + err);
+    //           res.send(err);
+    //         } else {
+    //           let reult = {
+    //             communications: data.recordsets[0]
+    //           }
+    //           sql.close();
+    //           return res.json(reult);
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+    let query = "SELECT * FROM communication";
     executeQuery(res, query);
   },
 
@@ -104,14 +123,14 @@ module.exports = {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
     let executeQuery = function (res, query) {
-      new sql.ConnectionPool(dbConfig).connect().then((pool)=>{
+      new sql.ConnectionPool(dbConfig).connect().then((pool) => {
         return pool.request().query(query);
-      }).then((result)=>{
+      }).then((result) => {
         let rows = result.recordset;
         res.status(200).json(rows);
         sql.close();
-      }).catch((err)=>{
-        res.status(500).send({message: `${err}`});
+      }).catch((err) => {
+        res.status(500).send({ message: `${err}` });
         sql.close();
       });
     }
