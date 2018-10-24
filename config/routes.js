@@ -2,7 +2,6 @@ module.exports.routes = {
   '/': {
     view: 'pages/homepage'
   },
-
   //Tracking
   'GET /api/v1/tracking': 'TrackingController.getAllTracking',
   'POST /api/v1/tracking': 'TrackingController.postTracking',
@@ -29,4 +28,7 @@ module.exports.routes = {
   'POST /api/v1/restaurant': 'RestaurantController.postRestaurant',
   'POST /api/v1/restaurant/update/:id': 'RestaurantController.putRestaurant',
   'POST /api/v1/restaurant/update': 'RestaurantController.sortRestaurant',
+
+  //AUTHENTICATION
+  'POST /api/v1/login': 'AccountController.login',
 };

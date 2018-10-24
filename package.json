@@ -12,6 +12,7 @@
     "dom-parser": "^0.1.5",
     "get-urls": "^8.0.0",
     "grunt": "1.0.1",
+    "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.11",
     "mssql": "^4.2.2",
     "sails": "^1.0.2",
