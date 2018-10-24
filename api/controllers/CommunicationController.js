@@ -56,7 +56,6 @@ module.exports = {
     let query = `insert into communication (image, title, content, action_discount, link_communication, category, is_active, locations, sortId)
         values('${newCommunication.image}',   N'${newCommunication.title}', N'${newCommunication.content}', N'${newCommunication.action_discount}', '${newCommunication.link_communication}', '${newCommunication.category}', '${newCommunication.is_active}', '${newCommunication.locations}', '${newCommunication.sortId}')
         SELECT * FROM communication WHERE id = SCOPE_IDENTITY()`;
-    console.log(query);
     executeQuery(res, query);
 
   },
