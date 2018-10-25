@@ -6,6 +6,7 @@
  */
 let sql = require("mssql");
 const config = require('./../../config/env/dbconfig');
+const jwt = require('jsonwebtoken');
 
 
 module.exports = {

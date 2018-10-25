@@ -1,6 +1,7 @@
 let sql = require("mssql");
 
 const config = require('./../../config/env/dbconfig');
+const jwt = require('jsonwebtoken');
 
 const ChangeToSlug = (chuoi) => {
   let slug;
