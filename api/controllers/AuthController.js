@@ -16,9 +16,15 @@ module.exports = {
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
-        let UserName = req.body.UserName;
-        let Password = req.body.Password;
+        let user = req.body;
+        let UserName = user.UserName;
+        let Password = user.Password;
 
+        console.log(req.body);
+        console.log(user);
+        console.log(UserName);
+        console.log(Password);
+        
 
         let executeQuery = function (res, query) {
             new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
