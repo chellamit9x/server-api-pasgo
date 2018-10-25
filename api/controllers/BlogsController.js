@@ -79,45 +79,50 @@ module.exports = {
 
 
 
-    let executeQuery = function (res, query) {
-      new sql.ConnectionPool(config.dbConfig).connect().then((pool) => {
-        return pool.request().query(query);
-      }).then((data) => {
+    jwt.verify(token, 'supersecret', function (err, decoded) {
+      if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
 
-        let blogs = [];
-        let arrNoiDung = []
-        for (let i = 0; i < data.recordsets[0].length; i++) {
-          arrRestaurant = [];
-          const itemBlog = data.recordsets[0][i];
-          let catagorySlug = ChangeToSlug(itemBlog.TenDanhMuc);
-          let titleSlug = ChangeToSlug(itemBlog.TieuDe);
-          let contentBlog = itemBlog.NoiDung
-          let arrLinkRestaurant = GetAllLinkRestaurantInBlog(data.recordsets[0][i].NoiDung)
-          for (let i = 0; i < arrLinkRestaurant.length; i++) {
-            let oneLinkRestaurant = arrLinkRestaurant[i];
-            arrRestaurant.push(oneLinkRestaurant);
+      let executeQuery = function (res, query) {
+        new sql.ConnectionPool(config.dbConfig).connect().then((pool) => {
+          return pool.request().query(query);
+        }).then((data) => {
+  
+          let blogs = [];
+          let arrNoiDung = []
+          for (let i = 0; i < data.recordsets[0].length; i++) {
+            arrRestaurant = [];
+            const itemBlog = data.recordsets[0][i];
+            let catagorySlug = ChangeToSlug(itemBlog.TenDanhMuc);
+            let titleSlug = ChangeToSlug(itemBlog.TieuDe);
+            let contentBlog = itemBlog.NoiDung
+            let arrLinkRestaurant = GetAllLinkRestaurantInBlog(data.recordsets[0][i].NoiDung)
+            for (let i = 0; i < arrLinkRestaurant.length; i++) {
+              let oneLinkRestaurant = arrLinkRestaurant[i];
+              arrRestaurant.push(oneLinkRestaurant);
+            }
+            arrNoiDung.push(contentBlog)
+            blogs.push({
+              "id": itemBlog.Id,
+              "link_blog": 'https://pasgo.vn/blog/' + locationsSlug + "/" + catagorySlug + "/" + titleSlug + "-" + itemBlog.Id,
+              "name_blog": itemBlog.TieuDe,
+              "arrRestaurant": arrRestaurant
+            });
           }
-          arrNoiDung.push(contentBlog)
-          blogs.push({
-            "id": itemBlog.Id,
-            "link_blog": 'https://pasgo.vn/blog/' + locationsSlug + "/" + catagorySlug + "/" + titleSlug + "-" + itemBlog.Id,
-            "name_blog": itemBlog.TieuDe,
-            "arrRestaurant": arrRestaurant
-          });
-        }
-        let result = {
-          "blogs": blogs
-        }
-        res.status(200).json(result);
-        sql.close();
-      }).catch((err) => {
-        res.status(500).send({ message: `${err}` });
-        sql.close();
-      });
-    }
-
-    let query = `exec GetListLinkBlog ${locations}, '${keysearch}'`;
-    executeQuery(res, query);
+          let result = {
+            "blogs": blogs
+          }
+          res.status(200).json(result);
+          sql.close();
+        }).catch((err) => {
+          res.status(500).send({ message: `${err}` });
+          sql.close();
+        });
+      }
+  
+      let query = `exec GetListLinkBlog ${locations}, '${keysearch}'`;
+      executeQuery(res, query);
+  
+    })
 
   },
 
