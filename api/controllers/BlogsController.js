@@ -2,6 +2,7 @@
 var sql = require("mssql");
 const _ = require('lodash');
 const config = require('./../../config/env/dbconfig');
+const jwt = require('jsonwebtoken');
 
 
 const ChangeToSlug = (chuoi) => {
