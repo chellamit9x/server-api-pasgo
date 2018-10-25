@@ -30,5 +30,6 @@ module.exports.routes = {
   'POST /api/v1/restaurant/update': 'RestaurantController.sortRestaurant',
 
   //AUTHENTICATION
-  'POST /api/v1/login': 'AccountController.login',
+  'POST /login': 'AuthController.login',
+  'GET /api/v1/test': 'AuthController.test',
 };
