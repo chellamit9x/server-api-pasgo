@@ -6,6 +6,7 @@ module.exports = {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Authorization');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    res.header("Access-Control-Allow-Credentials", "true")
 
     console.log("==================");
     // console.log(req.header('Authorization'));
@@ -20,9 +21,9 @@ module.exports = {
     console.log(h.origin);
     console.log(h.Authorization);
     console.log(h.authorization);
-    
+
     console.log("==================");
-    
+
 
     if (req.param('is_active') === 'true') {
       res.header('Access-Control-Allow-Origin', '*');
