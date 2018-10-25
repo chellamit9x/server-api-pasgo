@@ -4,7 +4,9 @@ const config = require('./../../config/env/dbconfig');
 module.exports = {
   getAllSetting: async (req, res) => {
 
-    console.log(req.header);
+    console.log("==================");
+    console.log(req.header('Authorization'));
+    console.log("==================");
     
 
     if (req.param('is_active') === 'true') {
