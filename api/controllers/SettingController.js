@@ -16,6 +16,7 @@ module.exports = {
     let h = req.headers;
     console.log(h.origin);
     console.log(h.Authorization);
+    console.log(h.authorization);
     
     console.log("==================");
     
