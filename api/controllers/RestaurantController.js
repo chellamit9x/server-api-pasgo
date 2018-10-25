@@ -37,6 +37,13 @@ ClearTagHTML = (action_discount) => {
 module.exports = {
 
   getAllOrRestaurant: async (req, res) => {
+
+
+
+    var token = req.header('Authorization');
+    console.log(token);
+
+
     let link_restaurant = req.param('link_restaurant');
     if (link_restaurant) {
 
@@ -97,6 +104,11 @@ module.exports = {
   },
 
   getOneRestaurantSetting: async (req, res) => {
+
+
+    var token = req.header('Authorization');
+    console.log(token);
+
     let link_restaurant = req.param('link_restaurant');
     if (link_restaurant) {
       let query = {
@@ -118,6 +130,9 @@ module.exports = {
   },
 
   postRestaurant: async (req, res) => {
+
+    var token = req.header('Authorization');
+    console.log(token);
 
     let restaurantBody = req.body;
     if (restaurantBody.is_active === 'true' || restaurantBody.is_active === 'false') {
@@ -173,6 +188,9 @@ module.exports = {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
+    var token = req.header('Authorization');
+    console.log(token);
+
     let id = req.param('id');
     let executeQuery = function (res, query) {
       new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
@@ -205,6 +223,9 @@ module.exports = {
 
 
   sortRestaurant: async (req, res) => {
+    
+    var token = req.header('Authorization');
+    console.log(token);
 
     let objSortId = req.body;
     let arrSortId = objSortId.updateSordId;
@@ -230,9 +251,12 @@ module.exports = {
         sql.close();
       });
     }
-    arrSortId.forEach(element => {
-      let query = `EXEC SortNotifyBlogs ${element.id}, ${element.sortId}`;
-      executeQuery(res, query);
-    });
+    if(arrSortId){
+      arrSortId.forEach(element => {
+        let query = `EXEC SortNotifyBlogs ${element.id}, ${element.sortId}`;
+        executeQuery(res, query);
+      });
+    }
+
   },
 };

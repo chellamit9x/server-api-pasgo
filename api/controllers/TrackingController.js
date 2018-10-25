@@ -11,10 +11,13 @@ const config = require('./../../config/env/dbconfig');
 module.exports = {
   getAllTracking: async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Expose-Headers', 'Authorization')
 
-
+    var token = req.header('Authorization');
+    console.log(token);
 
     let executeQuery = function (res, query) {
       new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
@@ -43,6 +46,9 @@ module.exports = {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+
+    var token = req.header('Authorization');
+    console.log(token);
 
     let executeQuery = function (res, query) {
       new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
