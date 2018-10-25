@@ -13,9 +13,11 @@ const jwt = require('jsonwebtoken');
 module.exports = {
     login: (req, res) => {
         res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,Content-Type, Authorization');
+        res.header('Access-Control-Allow-Credentials', true);
+        res.header('Access-Control-Expose-Headers', 'Authorization')
+        
         let user = req.body;
         let UserName = user.UserName;
         let Password = user.Password;
@@ -46,7 +48,15 @@ module.exports = {
     },
 
     test: (req, res) => {
+
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,Content-Type, Authorization');
+        res.header('Access-Control-Allow-Credentials', true);
+        res.header('Access-Control-Expose-Headers', 'Authorization')
+
         var token = req.header('Authorization');
+        
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
 
         jwt.verify(token, 'supersecret', function (err, decoded) {
@@ -72,6 +82,18 @@ module.exports = {
         })
 
     },
+
+    postTest: (req, res)=>{
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,Content-Type, Authorization');
+        res.header('Access-Control-Allow-Credentials', true);
+        res.header('Access-Control-Expose-Headers', 'Authorization')
+
+        var token = req.header('Authorization');
+        console.log(token);
+        
+    }
 
 };
 

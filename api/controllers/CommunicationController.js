@@ -5,8 +5,13 @@ module.exports = {
 
   getAllCommunication: async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Expose-Headers', 'Authorization')
+
+    var token = req.header('Authorization');
+    console.log(token);
 
     let executeQuery = function (res, query) {
       new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
@@ -27,9 +32,16 @@ module.exports = {
   },
 
   postCommunication: async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+
+    // res.header('Access-Control-Allow-Origin', '*');
+    // res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    // res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,Content-Type, Authorization');
+    // res.header('Access-Control-Allow-Credentials', true);
+    // res.header('Access-Control-Expose-Headers', 'Authorization')
+
+    var token = req.header('Authorization');
+    console.log(token);
+
     let newCommunication = req.body;
     let executeQuery = function (res, query) {
       sql.connect(config.dbConfigSetting, function (err) {
@@ -41,6 +53,7 @@ module.exports = {
           request.query(query, function (err, data) {
             if (err) {
               console.log("Error while querying database :- " + err);
+              sql.close();
               res.send(err);
             } else {
               let reult = {
@@ -64,6 +77,11 @@ module.exports = {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+
+    var token = req.header('Authorization');
+    console.log(token);
+
+
     let id = req.param('id');
     let executeQuery = function (res, query) {
       sql.connect(config.dbConfigSetting, function (err) {
@@ -96,6 +114,11 @@ module.exports = {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
+    var token = req.header('Authorization');
+    console.log(token);
+
+
+
     let executeQuery = function (res, query) {
       new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
         return pool.request().query(query);
@@ -112,16 +135,26 @@ module.exports = {
     let objSortId = req.body;
     let arrSortId = objSortId.updateSordId;
 
-    arrSortId.forEach(element => {
-      let query = `EXEC SortNotify ${element.id}, ${element.sortId}`;
-      executeQuery(res, query);
-    });
+    if(arrSortId){
+      arrSortId.forEach(element => {
+        let query = `EXEC SortNotify ${element.id}, ${element.sortId}`;
+        executeQuery(res, query);
+      });
+    }
+
   },
 
   deleteCommunication: async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+
+
+    var token = req.header('Authorization');
+    console.log(token);
+
+    
+
     let id = req.param('id');
     let executeQuery = function (res, query) {
       sql.connect(config.dbConfigSetting, function (err) {

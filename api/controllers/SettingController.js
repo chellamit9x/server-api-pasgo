@@ -3,27 +3,10 @@ const config = require('./../../config/env/dbconfig');
 
 module.exports = {
   getAllSetting: async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-    res.header("Access-Control-Allow-Credentials", "true")
 
-    console.log("==================");
-    // console.log(req.header('Authorization'));
-    // console.log(req.headers('Authorization'));
-    // console.log(req.Header('Authorization'));
-    // console.log(req.Header('Authorization'));
-    // console.log(req.Header);
-    // console.log(req.Headers);    
-    // console.log(req.header);
-    console.log(req.headers);
-    let h = req.headers;
-    console.log(h.origin);
-    console.log(h.Authorization);
-    console.log(h.authorization);
 
-    console.log("==================");
-
+    var token = req.header('Authorization');
+    console.log(token);
 
     if (req.param('is_active') === 'true') {
       res.header('Access-Control-Allow-Origin', '*');
@@ -128,6 +111,9 @@ module.exports = {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, contentType,Content-Type, Accept, Authorization");
+
+    var token = req.header('Authorization');
+    console.log(token);
 
     let body = req.body;
     let title_color = body.title_color;

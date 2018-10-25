@@ -54,9 +54,16 @@ const GetAllLinkRestaurantInBlog = (contentBlog) => {
 module.exports = {
   getAllBlogs: async (req, res) => {
     // let blogs = await Blogs.find();
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, contentType,Content-Type, Accept, Authorization");
+
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept,Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Expose-Headers', 'Authorization')
+
+    var token = req.header('Authorization');
+    console.log(token);
+
 
     let keysearch = req.param('keysearch');
     let locationsSlug = req.param('locations');

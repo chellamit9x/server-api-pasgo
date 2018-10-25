@@ -6,7 +6,7 @@ module.exports.routes = {
   'GET /api/v1/tracking': 'TrackingController.getAllTracking',
   'POST /api/v1/tracking': 'TrackingController.postTracking',
 
-  //Communication
+  //Communication 
   'GET /api/v1/communication': 'CommunicationController.getAllCommunication',
   'POST /api/v1/communication': 'CommunicationController.postCommunication',
   'POST /api/v1/communication/update/:id': 'CommunicationController.putCommunication',
@@ -15,12 +15,10 @@ module.exports.routes = {
 
   //Setting
   'GET /api/v1/setting': 'SettingController.getAllSetting',
-  'GET /api/v1/setting/:id': 'SettingController.getActiveSetting',
   'POST /api/v1/setting': 'SettingController.postSetting',
 
   //Blog
   'GET /api/v1/blogs': 'BlogsController.getAllBlogs',
-  'POST /api/v1/blogs': 'BlogsController.postBlog',
 
   //Restaurant
   'GET /api/v1/restaurant': 'RestaurantController.getAllOrRestaurant',
@@ -32,4 +30,6 @@ module.exports.routes = {
   //AUTHENTICATION
   'POST /login': 'AuthController.login',
   'GET /api/v1/test': 'AuthController.test',
+  'POST /test': 'AuthController.test',
+ 
 };
