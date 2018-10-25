@@ -6,6 +6,13 @@ module.exports = {
 
     console.log("==================");
     console.log(req.header('Authorization'));
+    console.log(req.headers('Authorization'));
+    console.log(req.Header('Authorization'));
+    console.log(req.Header('Authorization'));
+    console.log(req.Header);
+    console.log(req.Headers);    
+    console.log(req.header);
+    console.log(req.headers);
     console.log("==================");
     
 
