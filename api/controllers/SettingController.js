@@ -9,10 +9,15 @@ module.exports = {
     // console.log(req.headers('Authorization'));
     // console.log(req.Header('Authorization'));
     // console.log(req.Header('Authorization'));
-    console.log(req.Header);
-    console.log(req.Headers);    
-    console.log(req.header);
+    // console.log(req.Header);
+    // console.log(req.Headers);    
+    // console.log(req.header);
     console.log(req.headers);
+    let h = req.headers;
+    console.log(h.origin);
+    console.log(h.Authorization);
+    console.log(h.authorization);
+    
     console.log("==================");
     
 
