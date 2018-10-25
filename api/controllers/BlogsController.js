@@ -79,10 +79,7 @@ module.exports = {
     }
 
 
-
-    jwt.verify(token, 'supersecret', function (err, decoded) {
-      if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-
+ 
       let executeQuery = function (res, query) {
         new sql.ConnectionPool(config.dbConfig).connect().then((pool) => {
           return pool.request().query(query);
@@ -123,8 +120,6 @@ module.exports = {
       let query = `exec GetListLinkBlog ${locations}, '${keysearch}'`;
       executeQuery(res, query);
   
-    })
-
   },
 
 
