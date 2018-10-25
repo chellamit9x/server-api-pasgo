@@ -3,14 +3,14 @@ const config = require('./../../config/env/dbconfig');
 
 module.exports = {
   getAllSetting: async (req, res) => {
+
+    console.log(req.header);
+    
+
     if (req.param('is_active') === 'true') {
       res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-
-
-
-
 
       let executeQuery = function (res, query) {
         new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {

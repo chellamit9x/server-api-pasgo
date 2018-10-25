@@ -19,13 +19,6 @@ module.exports = {
         let user = req.body;
         let UserName = user.UserName;
         let Password = user.Password;
-
-        console.log(req.body);
-        console.log(user);
-        console.log(UserName);
-        console.log(Password);
-        
-
         let executeQuery = function (res, query) {
             new sql.ConnectionPool(config.dbConfigSetting).connect().then((pool) => {
                 return pool.request().query(query);
@@ -33,7 +26,7 @@ module.exports = {
                 if (data.rowsAffected[0] === 1) {
                     let user = data.recordset[0];
                     let token = jwt.sign({ id: user.id }, 'supersecret', {
-                        expiresIn: 20
+                        expiresIn: '10 days'
                     });
                     res.status(200).send({ auth: true, token: token });
                     sql.close();
