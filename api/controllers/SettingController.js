@@ -3,6 +3,9 @@ const config = require('./../../config/env/dbconfig');
 
 module.exports = {
   getAllSetting: async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
     console.log("==================");
     // console.log(req.header('Authorization'));
