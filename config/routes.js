@@ -6,6 +6,11 @@ module.exports.routes = {
   'GET /api/v1/tracking': 'TrackingController.getAllTracking',
   'POST /api/v1/tracking': 'TrackingController.postTracking',
 
+//Notify Tracking
+'POST /api/v1/notify/tracking': 'TrackingController.postNotifyTracking',
+
+
+
   //Communication 
   'GET /api/v1/communication': 'CommunicationController.getAllCommunication',
   'POST /api/v1/communication': 'CommunicationController.postCommunication',
@@ -13,9 +18,16 @@ module.exports.routes = {
   'POST /api/v1/communication/update': 'CommunicationController.sortCommunication',
   'POST /api/v1/communication/delete/:id': 'CommunicationController.deleteCommunication',
 
+  //Notify COmmunication
+  'GET /api/v1/notify/communication': 'CommunicationController.getNotifyAllCommunication',
+
+
+
   //Setting
   'GET /api/v1/setting': 'SettingController.getAllSetting',
   'POST /api/v1/setting': 'SettingController.postSetting',
+  //Setting Notify
+  'GET /api/v1/notify/setting': 'SettingController.getNotifyAllSetting',
 
   //Blog
   'GET /api/v1/blogs': 'BlogsController.getAllBlogs',

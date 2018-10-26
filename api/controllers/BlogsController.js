@@ -54,7 +54,6 @@ const GetAllLinkRestaurantInBlog = (contentBlog) => {
 
 module.exports = {
   getAllBlogs: async (req, res) => {
-    // let blogs = await Blogs.find();
 
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
@@ -63,7 +62,6 @@ module.exports = {
     res.header('Access-Control-Expose-Headers', 'Authorization')
 
     var token = req.header('Authorization');
-    console.log(token);
 
 
     let keysearch = req.param('keysearch');
@@ -79,12 +77,19 @@ module.exports = {
     }
 
 
- 
+    if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+
+    jwt.verify(token, 'supersecret', function (err, decoded) {
+      if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+
+
+
+
       let executeQuery = function (res, query) {
         new sql.ConnectionPool(config.dbConfig).connect().then((pool) => {
           return pool.request().query(query);
         }).then((data) => {
-  
+
           let blogs = [];
           let arrNoiDung = []
           for (let i = 0; i < data.recordsets[0].length; i++) {
@@ -116,10 +121,12 @@ module.exports = {
           sql.close();
         });
       }
-  
+
       let query = `exec GetListLinkBlog ${locations}, '${keysearch}'`;
       executeQuery(res, query);
-  
+
+
+    })
   },
 
 
